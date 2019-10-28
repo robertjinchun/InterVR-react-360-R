@@ -19,8 +19,8 @@ import {
   default as VideoModule, VideoPlayerInstance,
   type VideoStatusEvent
 } from 'VideoModule';
-import MediaAppTemplateInfoButton from "MediaAppTemplateInfoButton.react";
-import MediaAppTemplateVideoScreen from 'MediaAppTemplateVideoScreen.react';
+// import MediaAppTemplateInfoButton from "MediaAppTemplateInfoButton.react";
+// import MediaAppTemplateVideoScreen from 'MediaAppTemplateVideoScreen.react';
 
 const { AudioModule } = NativeModules;
 
@@ -38,8 +38,14 @@ class MediaAppTemplateScenePage extends React.Component {
   _preloading: boolean = false;
   state = {
     inTransition: false,
-    count:0,
   };
+  constructor(props){
+    super(props)
+    this.state = {
+      count:60,
+      flag:false
+    }
+  }
 
   componentWillMount() {
     this._players = {
@@ -163,6 +169,8 @@ class MediaAppTemplateScenePage extends React.Component {
   }
 
 
+
+
   render() {
     const currentTitle = this.props.currentScene.title;
     const nextTitle = this.props.nextScene.title;
@@ -175,6 +183,35 @@ class MediaAppTemplateScenePage extends React.Component {
     let sceneButtoninfo = this.props.buttonInfo;
     let enterBackground = this.props.enterBackground;
     let currentSceneNumber = this.props.currentSceneNumber
+    let counter = this.state.count;
+    let flag = this.state.flag;
+    let timercounter = 60;
+    //console.log(flag)
+
+    if (currentSceneNumber === 3 && flag === false) {
+      this.setState({
+        flag: true
+      })
+        
+      console.log(counter)
+       const timer = setInterval(function () {
+    //     //if (count == 1) clearInterval(timer);
+         //this.state.count--
+         timercounter--
+        console.log(timercounter)
+    //     //console.log(this.state.count)
+
+    //     if (this.state.count == 0) {
+    //       //boolean = false
+    //       clearInterval(timer)
+    //     };
+    //     //return count
+         this.setState({
+           count: timercounter
+         })
+       }, 1000);
+
+    }
 
     switch (currentSceneNumber) {
       case 0:
@@ -193,12 +230,12 @@ class MediaAppTemplateScenePage extends React.Component {
         sceneButtons.push(
           <View key={11} style={styles.scenePage3}>
             <View style={styles.QueMenuOpen}>
-              <VrButton 
-                style={styles.Questions} 
+              <VrButton
+                style={styles.Questions}
                 onClick={this._onClickNext}
                 onEnter={() => Environment.setBackgroundImage(asset("360_Zen.jpg"), { transition: 50 })}
                 onExit={() => Environment.setBackgroundImage(asset("360_Office.jpg"), { transition: 50 })}
-                >
+              >
                 <Text style={styles.text}>General</Text>
               </VrButton>
               <VrButton style={styles.InQuestions}
@@ -233,34 +270,22 @@ class MediaAppTemplateScenePage extends React.Component {
               <VrButton style={styles.Questions} onClick={this._onClickPrev}>
                 <Text style={styles.text}>Go Back</Text>
               </VrButton>
-              
+
             </View>
           </View>
         );
         break;
       case 3:
-        let count = 60
-        let boolean = true
-        let timer = setInterval(function () {
-          //if (count == 1) clearInterval(timer);
-          count--
-          console.log(count)
-          
-          if (count == 0) {
-            boolean = false
-            clearInterval(timer)
-          };
-          //return count
-        }, 1000);
+
         sceneButtons.push(
           <View key={11} style={styles.scenePage3}>
             <View style={styles.QueMenuOpen}>
-              <Text style={styles.text}>{count}</Text>
+              <Text style={styles.text}></Text>
             </View>
           </View>
         );
         break;
-        default:
+      default:
     }
 
     //console.log(enterBackground)
