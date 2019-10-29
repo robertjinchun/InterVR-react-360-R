@@ -19,8 +19,6 @@ import {
   default as VideoModule, VideoPlayerInstance,
   type VideoStatusEvent
 } from 'VideoModule';
-// import MediaAppTemplateInfoButton from "MediaAppTemplateInfoButton.react";
-// import MediaAppTemplateVideoScreen from 'MediaAppTemplateVideoScreen.react';
 
 const { AudioModule } = NativeModules;
 
@@ -43,11 +41,21 @@ class MediaAppTemplateScenePage extends React.Component {
     super(props)
     this.state = {
       count:60,
-      flag:false
+      flag:false,
+      time: {},
+       seconds: 60
     }
+    this.timer = 0;
+    this.startTimer = this.startTimer.bind(this);
+    this.countDown = this.countDown.bind(this);
   }
 
   componentWillMount() {
+
+    let timeLeftVar = this.state.seconds;
+    this.setState({ time: timeLeftVar });
+
+
     this._players = {
       scene: VideoModule.createPlayer(),
       screen: VideoModule.createPlayer(),
@@ -168,7 +176,28 @@ class MediaAppTemplateScenePage extends React.Component {
     this.props.onClickPrev && this.props.onClickPrev();
   }
 
+  startTimer() {
 
+    if (this.timer == 0 && this.state.seconds > 0 && this.props.currentSceneNumber === 3) {
+      console.log('hello')
+      this.timer = setInterval(this.countDown, 1000);
+    }
+  }
+
+  countDown() {
+    // Remove one second, set state so a re-render happens.
+    let seconds = this.state.seconds - 1;
+    console.log(seconds)
+    this.setState({
+      time: seconds,
+      seconds: seconds,
+    });
+
+    // Check if we're at zero.
+    if (seconds == 0) {
+      clearInterval(this.timer);
+    }
+  }
 
 
   render() {
@@ -188,30 +217,27 @@ class MediaAppTemplateScenePage extends React.Component {
     let timercounter = 60;
     //console.log(flag)
 
-    if (currentSceneNumber === 3 && flag === false) {
-      this.setState({
-        flag: true
-      })
+    if (currentSceneNumber === 3 ) {
+      this.startTimer()
+      }
         
-      console.log(counter)
-       const timer = setInterval(function () {
-    //     //if (count == 1) clearInterval(timer);
-         //this.state.count--
-         timercounter--
-        console.log(timercounter)
-    //     //console.log(this.state.count)
+    //   console.log(counter)
+    //    const timer = setInterval(function () {
+    // //     //if (count == 1) clearInterval(timer);
+    //      //this.state.count--
+    //      timercounter--
+    //     console.log(timercounter)
+    // //     //console.log(this.state.count)
 
-    //     if (this.state.count == 0) {
-    //       //boolean = false
-    //       clearInterval(timer)
-    //     };
-    //     //return count
-         this.setState({
-           count: timercounter
-         })
-       }, 1000);
+    // //     if (this.state.count == 0) {
+    // //       //boolean = false
+    // //       clearInterval(timer)
+    // //     };
+    // //     //return count
 
-    }
+    //    }, 1000);
+
+    // }
 
     switch (currentSceneNumber) {
       case 0:
@@ -276,65 +302,54 @@ class MediaAppTemplateScenePage extends React.Component {
         );
         break;
       case 3:
-
         sceneButtons.push(
           <View key={11} style={styles.scenePage3}>
             <View style={styles.QueMenuOpen}>
               <Text style={styles.text}></Text>
+              <VrButton style={styles.Questions} 
+                        onClick={this._onClickNext}>
+                <Text style={styles.text}>Start</Text>
+              </VrButton>
+              <Text>{this.state.time}</Text>
             </View>
           </View>
         );
         break;
+      case 4:
+        sceneButtons.push(
+          <View style={styles.QueMenuOpen}>
+            <VrButton style={styles.Questions}>
+              <Text style={styles.text}>Question one</Text>
+            </VrButton>
+            <VrButton style={styles.Questions}>
+              <Text style={styles.text}>Question two</Text>
+            </VrButton>
+            <VrButton style={styles.Questions}>
+              <Text style={styles.text}>Question three</Text>
+            </VrButton>
+            <VrButton style={styles.Questions}>
+              <Text style={styles.text}>Question four</Text>
+            </VrButton>
+            <VrButton style={styles.Questions}>
+              <Text style={styles.text}>Question five</Text>
+            </VrButton>
+            <VrButton style={styles.Questions} onClick={this._onClickNext}>
+              <Text style={styles.text}>Submit All</Text>
+            </VrButton>
+          </View>
+        );
+        break;
+
+
       default:
     }
-
-    //console.log(enterBackground)
-    // for (const i = 0; i < this.props.buttonCount; i++) {
-    //   //console.log(this.props.currentScene.sceneNumber)
-    //   if (this.props.currentScene.sceneNumber === 2) {
-    //     //console.log(enterBackground[i])
-    //     sceneButtons.push(
-    //       <MediaAppTemplateInfoButton
-    //         key={i}
-    //         onClick={this._onClickNext}
-    //         onEnterforBackground={enterBackground[i]}
-    //         // onExit={() => Environment.setBackgroundImage(asset("360_Zen.jpg"), { transition: 50 })}
-    //         text={sceneButtoninfo[i]}
-    //         width={300}
-    //       />
-    //     )
-    //   } else {
-    //     sceneButtons.push(
-    //       <MediaAppTemplateInfoButton
-    //         key={i}
-    //         onClick={this._onClickNext}
-    //         text={sceneButtoninfo[i]}
-    //         width={300}
-    //       />
-    //     )
-    //   }
-
-    // }
-
-
 
     return (
       <View style={[styles.container, this.state.inTransition && { opacity: 0 }]} >
         <Text style={styles.title}>
           {currentTitle}
         </Text>
-        {/* <MediaAppTemplateVideoScreen
-          player={this._players.screen._player}
-          style={styles.screen}
-          visible={showScreen}
-        /> */}
         {sceneButtons}
-
-        {/* <MediaAppTemplateInfoButton
-          onClick={this._onClickNext}
-          text={`Go To: ${nextTitle}`}
-          width={300}
-        /> */}
       </View >
     );
   }

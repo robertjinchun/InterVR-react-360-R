@@ -50,8 +50,18 @@ const SCENE_DEF = [
     source: { url: asset('video360.mp4').uri },
     sceneNumber: 3,
     // screen: {url: asset('video.mp4').uri},
-    next: 0,
+    next: 4,
     subtitle: 'This is a 2d video of street view, you can see the traffic.',
+  },
+  {
+  type: 'photo',
+  title: '2D Street View',
+  source: asset('360_World.jpg'),
+  // screen: {url: asset('video.mp4').uri},
+  next: 0,
+  previous: 1,
+  sceneNumber: 4,
+  subtitle: 'This is a 2d video of street view, you can see the traffic.',
   },
 
 ];
@@ -110,31 +120,6 @@ export default class MediaAppTemplate extends React.Component {
     );
   }
 };
-
-// The root react component of the subtitle surface
-// export class MediaAppTemplateSubtitle extends React.Component {
-//   state = {
-//     index: 0,
-//   };
-
-//   componentWillMount() {
-//     dataStore.addListener('dataChange', this._onDataChange);
-//   }
-//   componentWillUnmount() {
-//     dataStore.removeListener('dataChange', this._onDataChange);
-//   }
-//   _onDataChange = (index) => {
-//     this.setState({index: index});
-//   };
-//   render() {
-//     const currentScene = SCENE_DEF[this.state.index];
-//     return (
-//       <View style={styles.subtitle}>
-//         <MediaAppTemplateSubtitleText text={currentScene.subtitle} />
-//       </View>
-//     );
-//   }
-// };
 
 // defining StyleSheet
 const styles = StyleSheet.create({
